@@ -1,0 +1,22 @@
+@page "/clientes"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject Financiera.Infra.Datos.EF.FinancieraContexto DB
+@using Financiera.Dominio.Entidades
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="clientes/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="DB.Clientes">
+    <PropertyColumn Property="cliente => cliente.NombreCliente" />
+
+    <TemplateColumn Context="cliente">
+        <a href="@($"clientes/edit?idcliente={cliente.IdCliente}")">Edit</a> |
+        <a href="@($"clientes/details?idcliente={cliente.IdCliente}")">Details</a> |
+        <a href="@($"clientes/delete?idcliente={cliente.IdCliente}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>

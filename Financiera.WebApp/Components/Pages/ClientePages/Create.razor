@@ -1,0 +1,43 @@
+@page "/clientes/create"
+@inject Financiera.Infra.Datos.EF.FinancieraContexto DB
+@using Financiera.Dominio.Entidades
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Cliente</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Cliente" OnValidSubmit="AddCliente" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="nombrecliente" class="form-label">NombreCliente:</label> 
+                <InputText id="nombrecliente" @bind-Value="Cliente.NombreCliente" class="form-control" /> 
+                <ValidationMessage For="() => Cliente.NombreCliente" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/clientes">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Cliente Cliente { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddCliente()
+    {
+        DB.Clientes.Add(Cliente);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/clientes");
+    }
+}

@@ -1,0 +1,86 @@
+@page "/Clientes/edit"
+@inject Financiera.Infra.Datos.EF.FinancieraContexto DB
+@using Financiera.Dominio.Entidades
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Cliente</h4>
+<hr />
+@if (Cliente is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Cliente" OnValidSubmit="UpdateCliente" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Cliente.IdCliente" value="@Cliente.IdCliente" />
+                <div class="mb-3">
+                    <label for="nombrecliente" class="form-label">NombreCliente:</label>
+                    <InputText id="nombrecliente" @bind-Value="Cliente.NombreCliente" class="form-control" />
+                    <ValidationMessage For="() => Cliente.NombreCliente" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/clientes">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int IdCliente { get; set; }
+
+    [SupplyParameterFromForm]
+    public Cliente? Cliente { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cliente ??= await DB.Clientes.FirstOrDefaultAsync(m => m.IdCliente == IdCliente);
+
+        if (Cliente is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateCliente()
+    {
+        DB.Attach(Cliente!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ClienteExists(Cliente!.IdCliente))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/clientes");
+    }
+
+    bool ClienteExists(int idcliente)
+    {
+        return DB.Clientes.Any(e => e.IdCliente == idcliente);
+    }
+}

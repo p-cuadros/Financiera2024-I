@@ -1,0 +1,45 @@
+@page "/clientes/details"
+@inject Financiera.Infra.Datos.EF.FinancieraContexto DB
+@using Financiera.Dominio.Entidades
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Cliente</h4>
+    <hr />
+    @if (cliente is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">NombreCliente</dt>
+            <dd class="col-sm-10">@cliente.NombreCliente</dd>
+        </dl>
+        <div>
+            <a href="@($"/clientes/edit?idcliente={cliente.IdCliente}")">Edit</a> |
+            <a href="@($"/clientes")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Cliente? cliente;
+
+    [SupplyParameterFromQuery]
+    public int IdCliente { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await DB.Clientes.FirstOrDefaultAsync(m => m.IdCliente == IdCliente);
+
+        if (cliente is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
