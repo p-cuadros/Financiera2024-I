@@ -1,7 +1,7 @@
 name: Construcción y despliegue de una aplicación Blazor a Azure
 
 env:
-  AZURE_WEBAPP_NAME: appblazor2024123456  # Aqui va el nombre de su aplicación
+  AZURE_WEBAPP_NAME: appblazor2024123455  # Aqui va el nombre de su aplicación
   AZURE_WEBAPP_PACKAGE_PATH: '.'          # Es la ruta de destino
   DOTNET_VERSION: '8'                     # la versión de .NET
 
